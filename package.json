@@ -1,0 +1,15 @@
+{
+	"scripts": {
+		"web": "pnpm --filter @nexura/web dev",
+		"server": "pnpm --filter @nexura/server start:dev",
+		"ai": "pnpm --filter @nexura/server start:dev ai",
+		"all": "concurrently \"pnpm run web\" \"pnpm run server\" \"pnpm run ai\""
+	},
+	"dependencies": {
+		"@types/md5": "^2.3.6",
+		"@types/node": "^25.9.1",
+		"concurrently": "^9.2.1",
+		"dayjs": "^1.11.20",
+		"md5": "^2.3.0"
+	}
+}
