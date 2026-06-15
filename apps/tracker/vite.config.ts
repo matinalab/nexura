@@ -4,7 +4,7 @@ import dts from 'vite-plugin-dts'
 export default defineConfig({
   plugins: [
     dts({
-      outDirs: 'dist', //输出目录
+      outDir: 'dist', //输出目录
       entryRoot: '.' //入口根目录
     })
   ],

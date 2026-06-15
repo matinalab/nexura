@@ -17,8 +17,8 @@ export const getFingerprint = async (config: TrackerConfig) => {
     const result = await fp.get()
     const body: UvDto = {
         anonymousId: result.visitorId,
-        browser: browserInfo.browser,
-        os: browserInfo.os,
+        browser: browserInfo.browser ?? '',
+        os: browserInfo.os ?? '',
         device: browserInfo.device,
     }
     //上报给后端
