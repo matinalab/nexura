@@ -56,16 +56,16 @@ const loadModel = (url: LoginType) => {
         loader.load('/models/login/scene.gltf', (gltf) => {
             currentModel = gltf.scene
             scene.add(currentModel)
-            scene.position.y = -0.8 //往下一点
-            currentModel.scale.set(0.8, 0.8, 0.8)
+            scene.position.y = -0.2 //往下一点
+            currentModel.scale.set(0.01, 0.01, 0.01)
         })
     }
     if (url === 'register') {
         loader.load('/models/register/scene.gltf', (gltf) => {
             currentModel = gltf.scene
             scene.add(currentModel)
-            scene.position.y = -0.8 //往下一点
-            currentModel.scale.set(0.8, 0.8, 0.8)
+            scene.position.y = -0.5 //往下一点
+            currentModel.scale.set(0.002, 0.002, 0.002)
             if(gltf.animations && gltf.animations.length > 0) {
                 mixer = new THREE.AnimationMixer(currentModel)
                 gltf.animations.forEach((animation) => {
@@ -90,6 +90,18 @@ const initThree = () => {
         precision: 'highp', //高精度
         powerPreference: 'high-performance', //高性能
     })
+    // 环境光
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.2)
+    scene.add(ambientLight)
+    // 主方向光
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1)
+    dirLight.position.set(5, 10, 7)
+    scene.add(dirLight)
+    // 补光
+    const fillLight = new THREE.DirectionalLight(0xffffff, 0.8)
+    fillLight.position.set(-5, 2, -5)
+    scene.add(fillLight)
+
     loadModel(type.value)
     renderer.setSize(width, height) //设置渲染器大小
     renderer.render(scene, camera) //渲染场景

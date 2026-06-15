@@ -1,11 +1,11 @@
 Model Information:
-* title:	[Blue Archive]Kasumizawa Miyu
-* source:	https://sketchfab.com/3d-models/blue-archivekasumizawa-miyu-108d81dfd5a44dab92e4dccf0cc51a02
-* author:	Onerui(momo) (https://sketchfab.com/hswangrui)
+* title:	Mysterious Letter
+* source:	https://sketchfab.com/3d-models/mysterious-letter-cf9b873a84994d648361853dd8609aee
+* author:	beewee (https://sketchfab.com/beewee)
 
 Model License:
-* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
-* requirements:	Author must be credited. Commercial use is allowed.
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
 
 If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
-This work is based on "[Blue Archive]Kasumizawa Miyu" (https://sketchfab.com/3d-models/blue-archivekasumizawa-miyu-108d81dfd5a44dab92e4dccf0cc51a02) by Onerui(momo) (https://sketchfab.com/hswangrui) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+This work is based on "Mysterious Letter" (https://sketchfab.com/3d-models/mysterious-letter-cf9b873a84994d648361853dd8609aee) by beewee (https://sketchfab.com/beewee) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
