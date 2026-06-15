@@ -111,7 +111,7 @@ sudo systemctl start minio
 ### 1. 拉取代码
 
 ```bash
-git clone https://github.com/your-org/nexura.git /home/deploy/nexura
+git clone https://github.com/matinalab/nexura /home/deploy/nexura
 cd /home/deploy/nexura
 ```
 
@@ -135,7 +135,7 @@ vim server/.env
 
 ```env
 # 数据库
-DATABASE_URL="postgresql://nexura_user:your_password@localhost:5432/nexura"
+DATABASE_URL="postgresql://nexura_user:123456@localhost:5432/nexura"
 
 # JWT
 SECRET_KEY="换成随机的长字符串，不能用开发环境的值"
@@ -198,10 +198,10 @@ pnpm prisma db seed
 cd /home/deploy/nexura/server
 
 # 构建主服务 → dist/apps/server/main.js
-nest build server
+pnpm exec nest build server
 
 # 构建 AI 服务 → dist/apps/ai/main.js
-nest build ai
+pnpm exec nest build ai
 ```
 
 或通过 pnpm script：
