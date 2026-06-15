@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'nexura-server',
-      script: './server/dist/apps/server/main.js',
+      script: './server/dist/apps/server/apps/server/src/main.js',
       cwd: '/home/deploy/nexura',
       env: {
         NODE_ENV: 'production',
@@ -14,7 +14,7 @@ module.exports = {
     },
     {
       name: 'nexura-ai',
-      script: './server/dist/apps/ai/main.js',
+      script: './server/dist/apps/ai/apps/ai/src/main.js',
       cwd: '/home/deploy/nexura',
       env: {
         NODE_ENV: 'production',
