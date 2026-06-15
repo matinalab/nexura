@@ -20,7 +20,7 @@ export const reportError = (visitorId: string,config: TrackerConfig) => {
             visitorId,
             error:'promise', //promise错误
             message:isError ? e.reason.message : JSON.stringify(e.reason),
-            stack:isError ? e.reason.stack : 'Promise Rejection',
+            stack: isError ? (e.reason.stack ?? 'No stack') : 'Promise Rejection',
             url:window.location.href,
         }
         report(url, body)

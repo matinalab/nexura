@@ -20,10 +20,10 @@ export class Tracker {
         this.initPromise = (async () => {
             let config = this.config
             this.visitorId = await getFingerprint(config)
-            reportEvent(this.visitorId, config) //事件上报目前没有visitorId先随便写一个
-            reportError(this.visitorId, config) //错误上报目前没有visitorId先随便写一个
-            reportPv(this.visitorId, config) //页面上报目前没有visitorId先随便写一个
-            reportPerformance(this.visitorId, config) //性能上报目前没有visitorId先随便写一个
+            reportEvent(this.visitorId!, config)
+            reportError(this.visitorId!, config)
+            reportPv(this.visitorId!, config)
+            reportPerformance(this.visitorId!, config)
         })()
         return this.initPromise
     }

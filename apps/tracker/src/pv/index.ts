@@ -24,13 +24,13 @@ export const reportPv = (visitorId: string,config: TrackerConfig) => {
         reportView(visitorId,config)
     })
     const originalPushState = history.pushState //获取原始的pushState方法
-    history.pushState = function () {
-        originalPushState.apply(this, arguments)
+    history.pushState = function (...args: Parameters<typeof history.pushState>) {
+        originalPushState.apply(this, args)
         reportView(visitorId,config)
     }
-    const originalReplaceState = history.replaceState //获取原始的replaceState方法
-    history.replaceState = function () {
-        originalReplaceState.apply(this, arguments)
+    const originalReplaceState = history.replaceState
+    history.replaceState = function (...args: Parameters<typeof history.replaceState>) {
+        originalReplaceState.apply(this, args)
         reportView(visitorId,config)
     }
 }
