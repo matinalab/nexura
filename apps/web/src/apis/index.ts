@@ -3,8 +3,8 @@ import { useUserStore } from '@/stores/user' //pinia user的
 import router from '@/router' //路由
 import { refreshTokenApi } from './auth' //刷新token接口
 import { ElMessage } from 'element-plus' //引入element-plus的提示框
-export const uploadUrl = import.meta.env.DEV ? 'http://192.168.1.6:9000' : 'http://线上地址待定'
-export const socketUrl = import.meta.env.DEV ? 'http://localhost:3000' : 'http://线上地址待定'
+export const uploadUrl = import.meta.env.DEV ? 'http://192.168.1.6:9000' : 'http://nexura.bbroot.com'
+export const socketUrl = import.meta.env.DEV ? 'http://localhost:3000' : 'http://nexura.bbroot.com'
 export const timeout = 50000
 //server服务器接口
 export const serverApi = axios.create({
