@@ -1,4 +1,5 @@
 import { fileURLToPath, URL } from 'node:url'
+import { Config } from '@nexura/config';
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
@@ -7,14 +8,14 @@ import tailwindcss from '@tailwindcss/vite'
 // https://vite.dev/config/
 export default defineConfig({
   server: {
-    port: 8080,
+    port: Config.ports.web,
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:' + Config.ports.server,
         changeOrigin: true,
       },
       '/ai': {
-        target: 'http://localhost:3001',
+        target: 'http://localhost:' + Config.ports.ai,
         changeOrigin: true,
       },
     },
