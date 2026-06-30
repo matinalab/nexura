@@ -93,7 +93,7 @@ import { BullModule } from '@nestjs/bullmq';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         secret: configService.get('SECRET_KEY'),
-        signOptions: { expiresIn: 10 }, // 测试用短过期，生产改为 '15m' 等
+        signOptions: { expiresIn: '15m' },
       }),
     }),
     MinioModule,

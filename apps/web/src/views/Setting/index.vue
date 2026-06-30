@@ -1,6 +1,6 @@
 <template>
-    <div class="mx-auto w-[1200px] px-4 py-6">
-        <div class="flex items-center justify-between">
+    <div class="page-container py-4 md:py-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
                 <div class="text-xl font-extrabold text-slate-900">设置</div>
                 <div class="mt-1 text-sm text-slate-500">在这里修改你的个人信息与头像</div>
@@ -12,7 +12,7 @@
             </div>
         </div>
         <el-row :gutter="16" class="mt-4">
-            <el-col :span="8">
+            <el-col :xs="24" :sm="24" :md="8">
                 <el-card shadow="never">
                     <template #header>
                         <div class="font-bold">头像</div>
@@ -51,13 +51,13 @@
                 </el-card>
             </el-col>
 
-            <el-col :span="16">
+            <el-col :xs="24" :sm="24" :md="16">
                 <el-card shadow="never">
                     <template #header>
                         <div class="font-bold">个人信息</div>
                     </template>
 
-                    <el-form label-width="140px" :model="form" :rules="rules" ref="formRef" status-icon>
+                    <el-form label-width="120px" :model="form" :rules="rules" ref="formRef" status-icon>
                         <el-form-item label="用户名：" prop="name">
                             <el-input v-model="form.name" placeholder="请输入用户名" clearable />
                         </el-form-item>

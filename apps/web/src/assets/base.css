@@ -3,3 +3,9 @@
 html,body,#app{
   @apply h-full w-full;
 }
+
+@layer components {
+  .page-container {
+    @apply w-full max-w-[1200px] mx-auto px-4;
+  }
+}

@@ -1,36 +1,89 @@
 <template>
-    <header class="flex items-center h-20 border-b border-gray-200 justify-center sticky top-0 bg-white z-10">
-        <div class="w-[1200px] mx-auto flex items-center justify-between">
-            <div
-                class="text-2xl font-bold bg-indigo-700 text-white rounded-[10px] px-2 py-1 w-10 flex items-center justify-center h-10 ">
-                N</div>
-            <div class="text-2xl font-bold">Nexura</div>
-            <template v-for="route in routes" :key="route.path">
-                <div @click="gotoPath(route.path)" :class="isActive(route.path)"
-                    class="flex items-center gap-2 cursor-pointer rounded-[10px] px-2 py-1">
-                    <el-icon>
-                        <component :is="route.icon" />
-                    </el-icon>
-                    <span>{{ route.name }}</span>
-                </div>
-            </template>
-            <div class="flex items-center gap-2 bg-blue-200 text-blue-700 rounded-full px-2 py-1"><el-icon>
-                    <Sunny />
-                </el-icon> <span class="font-bold text-sm">{{ userStore.getUser?.wordNumber ?? 0 }}</span></div>
-            <div class="flex items-center gap-2 bg-amber-200 text-amber-700 rounded-full px-2 py-1"><el-icon>
-                    <Star />
-                </el-icon> <span class="font-bold text-sm">{{ userStore.getUser?.dayNumber ?? 0 }}</span></div>
-            <el-popover :width="340">
-                <template #reference>
-                    <div class="flex items-center gap-2 border-l cursor-pointer border-gray-200 pl-4">
-                        <img class="w-10 h-10 rounded-full ml-2 mr-2" :src="avatar" />
-                        <span class="text-sm font-bold">{{ userStore.getUser?.name ?? '游客' }}</span>
+    <!-- 桌面顶栏 -->
+    <header class="hidden md:flex items-center h-20 border-b border-gray-200 justify-center sticky top-0 bg-white z-10">
+        <div class="page-container flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3 shrink-0">
+                <div
+                    class="text-2xl font-bold bg-indigo-700 text-white rounded-[10px] px-2 py-1 w-10 flex items-center justify-center h-10">
+                    N</div>
+                <div class="text-2xl font-bold">Nexura</div>
+            </div>
+            <div class="flex items-center">
+                <template v-for="route in routes" :key="route.path">
+                    <div @click="gotoPath(route.path)" :class="isActive(route.path)"
+                        class="flex items-center min-w-20 gap-2 cursor-pointer rounded-[10px] mx-1 px-3 py-1">
+                        <el-icon>
+                            <component :is="route.icon" />
+                        </el-icon>
+                        <span>{{ route.name }}</span>
                     </div>
+                </template>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+                <div class="flex items-center gap-2 bg-blue-200 text-blue-700 rounded-full px-2 py-1"><el-icon>
+                        <Sunny />
+                    </el-icon> <span class="font-bold text-sm">{{ userStore.getUser?.wordNumber ?? 0 }}</span></div>
+                <div class="flex items-center gap-2 bg-amber-200 text-amber-700 rounded-full px-2 py-1"><el-icon>
+                        <Star />
+                    </el-icon> <span class="font-bold text-sm">{{ userStore.getUser?.dayNumber ?? 0 }}</span></div>
+                <el-popover :width="profilePopoverWidth" placement="bottom-end" :popper-options="profilePopperOptions">
+                    <template #reference>
+                        <div class="flex items-center gap-2 border-l cursor-pointer border-gray-200 pl-4">
+                            <img class="w-10 h-10 rounded-full ml-2 mr-2" :src="avatar" />
+                            <span class="text-sm font-bold">{{ userStore.getUser?.name ?? '游客' }}</span>
+                        </div>
+                    </template>
+                    <Profile />
+                </el-popover>
+            </div>
+        </div>
+    </header>
+
+    <!-- 移动端顶栏 -->
+    <header
+        class="md:hidden flex items-center h-14 border-b border-gray-200 justify-between sticky top-0 bg-white z-10 px-4">
+        <div class="flex items-center gap-2">
+            <div
+                class="text-lg font-bold bg-indigo-700 text-white rounded-[8px] w-8 h-8 flex items-center justify-center">
+                N</div>
+            <span class="font-bold text-lg">Nexura</span>
+        </div>
+        <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1 bg-blue-200 text-blue-700 rounded-full px-2 py-0.5 text-xs font-bold">
+                <el-icon :size="14">
+                    <Sunny />
+                </el-icon>
+                {{ userStore.getUser?.wordNumber ?? 0 }}
+            </div>
+            <div class="flex items-center gap-1 bg-amber-200 text-amber-700 rounded-full px-2 py-0.5 text-xs font-bold">
+                <el-icon :size="14">
+                    <Star />
+                </el-icon>
+                {{ userStore.getUser?.dayNumber ?? 0 }}
+            </div>
+            <el-popover :width="profilePopoverWidth" placement="bottom-end" :popper-options="profilePopperOptions">
+                <template #reference>
+                    <img class="w-8 h-8 rounded-full cursor-pointer" :src="avatar" />
                 </template>
                 <Profile />
             </el-popover>
         </div>
     </header>
+
+    <!-- 移动端底部 Tab -->
+    <nav
+        class="md:hidden fixed bottom-0 inset-x-0 z-20 bg-white border-t border-gray-200 pb-[env(safe-area-inset-bottom)]">
+        <div class="flex items-center justify-around h-14">
+            <div v-for="route in routes" :key="route.path" @click="gotoPath(route.path)"
+                :class="isMobileActive(route.path)"
+                class="flex flex-col items-center justify-center flex-1 h-full cursor-pointer gap-0.5">
+                <el-icon :size="20">
+                    <component :is="route.icon" />
+                </el-icon>
+                <span class="text-[10px]">{{ route.name }}</span>
+            </div>
+        </div>
+    </nav>
 </template>
 
 
@@ -45,6 +98,21 @@ import { useLogin } from '@/hooks/useLogin'
 const { avatar } = useAvatar()
 const { login } = useLogin()
 const userStore = useUserStore()
+const profilePopoverWidth = 320
+const profilePopperOptions = {
+    modifiers: [
+        {
+            name: 'preventOverflow',
+            options: { padding: 16 },
+        },
+        {
+            name: 'flip',
+            options: {
+                fallbackPlacements: ['bottom-start', 'top-end', 'top-start'],
+            },
+        },
+    ],
+}
 const router = useRouter()
 const currentPath = ref('')
 const routes = [
@@ -56,6 +124,9 @@ const routes = [
 ]
 const isActive = (path: string) => {
     return currentPath.value === path ? 'bg-blue-200 text-blue-700' : 'text-gray-500 hover:bg-blue-200 hover:text-blue-700'
+}
+const isMobileActive = (path: string) => {
+    return currentPath.value === path ? 'text-indigo-600' : 'text-gray-400'
 }
 watch(() => router.currentRoute.value, (newVal) => {
     currentPath.value = newVal.path

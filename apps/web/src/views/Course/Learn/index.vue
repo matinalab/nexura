@@ -1,6 +1,6 @@
 <template>
     <div class="min-h-[60vh] bg-zinc-50/80">
-        <div class="w-[1200px] mx-auto px-4 pt-12 pb-24">
+        <div class="page-container pt-8 md:pt-12 pb-24">
             <header class="mb-10 text-center">
                 <h1 class="text-3xl font-bold text-zinc-900 tracking-tight sm:text-4xl">{{ title }}</h1>
                 <p class="mt-3 text-zinc-500 text-sm">请根据释义和翻译拼写单词</p>
@@ -47,7 +47,7 @@
                                     </div>
                                 </div>
                                 <el-icon
-                                    class="absolute! right-10 top-10 cursor-pointer text-slate-400 hover:text-indigo-400 transition-colors"
+                                    class="absolute! right-4 top-4 md:right-10 md:top-10 cursor-pointer text-slate-400 hover:text-indigo-400 transition-colors"
                                     :size="18" :title="isWordBlurred ? '点击显示单词' : '点击隐藏单词'"
                                     @click="isWordBlurred = !isWordBlurred">
                                     <View v-if="isWordBlurred" />
@@ -78,7 +78,7 @@
                                 </div>
                             </div>
                             <!--控制按钮-->
-                            <div class="flex justify-end gap-2">
+                            <div class="flex flex-wrap justify-end gap-2 mt-4">
                                 <el-button type="primary" @click="pagePrev">
                                     上一个
                                 </el-button>

@@ -1,7 +1,10 @@
 <template>
-    <div class="p-5 rounded-[5px] w-[256px] bg-purple-50 border border-right-1 border-t-0 border-b-0 border-l-0 border-gray-200">
-        <div @click="changeActive(value)" :class="{'bg-purple-300': active === value.id}" class="rounded-[5px] p-2 transition-all duration-300" v-for="value in chatMode" :key="value.id">
-            <div class="text-sm  cursor-pointer p-2 px-4 text-gray-700">
+    <div
+        class="p-3 lg:p-5 rounded-[5px] w-full lg:w-[256px] lg:shrink-0 bg-purple-50 border border-gray-200 lg:border-r lg:border-t-0 lg:border-b-0 lg:border-l-0 flex lg:flex-col flex-row overflow-x-auto gap-2 lg:gap-0">
+        <div @click="changeActive(value)" :class="{ 'bg-purple-300': active === value.id }"
+            class="rounded-[5px] p-2 transition-all duration-300 shrink-0 lg:shrink" v-for="value in chatMode"
+            :key="value.id">
+            <div class="text-sm cursor-pointer p-2 px-4 text-gray-700 whitespace-nowrap">
                 {{ value.label }}
             </div>
         </div>
@@ -9,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref,onMounted} from 'vue'
+import { ref, onMounted } from 'vue'
 import type { ChatModeList, ChatMode } from '@nexura/common/chat';
 import { getChatMode } from '@/apis/chat';
 const emits = defineEmits(['onGetRole'])

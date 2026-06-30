@@ -1,5 +1,5 @@
 <template>
-    <div class="w-[1200px] mx-auto flex mt-10">
+    <div class="page-container flex flex-col lg:flex-row gap-4 mt-4 md:mt-10">
         <Conversations @onGetRole="getRole" />
         <Bubble :list="list" @onSendMessage="sendMessage" />
     </div>

@@ -1,5 +1,6 @@
 <template>
-    <section class="w-80 overflow-hidden rounded-[14px] bg-linear-to-b from-white/95 to-slate-50/95 backdrop-blur"
+    <section
+        class="w-full max-w-80 overflow-hidden rounded-[14px] bg-linear-to-b from-white/95 to-slate-50/95 backdrop-blur"
         aria-label="用户资料卡">
         <div class="flex items-center gap-3 px-4 pb-3 pt-3.5">
             <div class="grid size-11 shrink-0 place-items-center rounded-full border border-gray-200">

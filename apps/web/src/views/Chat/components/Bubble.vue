@@ -1,5 +1,5 @@
 <template>
-    <div class="flex-1 h-[750px] p-5 bg-purple-50 flex flex-col">
+    <div class="flex-1 min-h-[50vh] lg:h-[750px] p-3 md:p-5 bg-purple-50 flex flex-col rounded-[5px]">
         <div class="flex-1 overflow-y-auto">
             <div v-for="(item, index) in list" :key="index">
                 <div class="flex justify-end items-center  gap-4 mt-5 mb-5 mr-5" v-if="item.role === 'human'">
@@ -24,9 +24,9 @@
             </div>
             <div ref="chatRef"></div>
         </div>
-        <div class="flex p-5 border-t border-gray-200 box-border flex-col gap-3">
+        <div class="flex p-3 md:p-5 border-t border-gray-200 box-border flex-col gap-3">
             <!-- 功能选项 -->
-            <div class="flex items-center gap-3">
+            <div class="flex flex-wrap items-center gap-2 md:gap-3">
                 <div class="flex items-center gap-1 px-3 py-1 rounded-full text-xs cursor-pointer transition-all border"
                     :class="deepThink
                         ? 'bg-purple-100 border-purple-400 text-purple-700'
@@ -45,11 +45,11 @@
                 </div>
             </div>
             <!-- 输入框 -->
-            <div class="flex">
-                <el-input @keyup.enter="sendMessage" type="textarea" :rows="2" v-model="message" placeholder="请输入内容" />
-                <el-button class="ml-2" :icon="Position" type="primary" @click="sendMessage"></el-button>
-                <el-button v-if="!isRecording" class="ml-2" :icon="Mic" type="primary" @click="startRecording"></el-button>
-                <el-button v-else class="ml-2" :icon="VideoPause" type="primary" @click="stopRecording"></el-button>
+            <div class="flex items-end gap-2">
+                <el-input @keyup.enter="sendMessage" type="textarea" :rows="2" v-model="message" placeholder="请输入内容" class="flex-1" />
+                <el-button :icon="Position" type="primary" @click="sendMessage"></el-button>
+                <el-button v-if="!isRecording" :icon="Mic" type="primary" @click="startRecording"></el-button>
+                <el-button v-else :icon="VideoPause" type="primary" @click="stopRecording"></el-button>
             </div>
         </div>
     </div>

@@ -1,39 +1,37 @@
 <template>
-    <div class="w-[1200px] mx-auto mt-10 pb-30">
+    <div class="page-container mt-6 md:mt-10 pb-20 md:pb-30">
         <!-- 背景区域 -->
-        <div class="relative flex justify-between rounded-[20px] p-9">
+        <div class="relative flex flex-col lg:flex-row justify-between rounded-[20px] p-4 md:p-9">
             <div class="absolute inset-0 bg-linear-to-r from-gray-900 via-gray-900 to-gray-900/70 rounded-[20px]" />
-            <div class="relative z-8 p-8">
-                <span class="text-white text-1xl bg-indigo-500/20 rounded-[100px] px-4 py-2">坚持5天打卡学习</span>
-                <div class="text-2xl font-bold pt-8 text-l text-indigo-500">通过跟AI对话，提高你的英语水平</div>
-                <div class="text-1xl font-bold pt-5 text-gray-300">超1000000学员的选择，提升您的英语能力</div>
-                <div class="flex items-center gap-2 pt-10">
-                    <button @click="showLogin"
-                        class="bg-indigo-700 text-white rounded-[100px] px-4 py-2 cursor-pointer text-sm block w-30 h-10">立即学习</button>
-                    <button
-                        class="bg-indigo-700 text-white rounded-[100px] px-4 py-2 cursor-pointer text-sm block w-30 h-10">查看课程</button>
+            <div class="relative z-8 p-4 md:p-8">
+                <!-- <span class="text-white text-sm md:text-base bg-indigo-500/20 rounded-[100px] px-4 py-2">坚持5天打卡学习</span> -->
+                <div class="text-xl md:text-2xl font-bold pt-6 md:pt-8 text-indigo-500">通过跟AI对话，提高你的英语水平</div>
+                <div class="text-sm md:text-base font-bold pt-4 md:pt-5 text-gray-300">超1000000学员的选择，提升您的英语能力</div>
+                <div class="flex flex-wrap items-center gap-2 pt-6 md:pt-10">
+                    <button @click="showLogin" class="bg-indigo-700 text-white rounded-[100px] px-4 py-2 cursor-pointer text-sm w-30 h-10">立即学习</button>
+                    <!-- <button class="bg-indigo-700 text-white rounded-[100px] px-4 py-2 cursor-pointer text-sm w-30 h-10">查看课程</button> -->
                 </div>
             </div>
-            <div class="relative z-8 p-8">
+            <div class="relative z-8 p-4 md:p-8 hidden sm:block">
                 <Hologram />
             </div>
         </div>
         <!-- 描述区域 -->
-        <div class="rounded-[20px] p-10 text-center">
-            <div class="text-2xl text-why font-bold text-gray-800">为什么选择我们?</div>
-            <div class="text-1xl text-why-content font-bold text-gray-600 mt-4">我们经过科学的验证，AI学习英语的效果比传统学习方式更好，更高效。</div>
+        <div class="rounded-[20px] p-6 md:p-10 text-center">
+            <div class="text-xl md:text-2xl text-why font-bold text-gray-800">为什么选择我们?</div>
+            <div class="text-sm md:text-base text-why-content font-bold text-gray-600 mt-4">我们经过科学的验证，AI学习英语的效果比传统学习方式更好，更高效。</div>
         </div>
         <!-- 数据统计区域 -->
-        <div class="mt-16 py-12 flex items-center justify-between">
+        <div class="mt-8 md:mt-16 py-8 md:py-12 grid grid-cols-2 md:flex md:items-center md:justify-between gap-6">
             <template v-for="(item, index) in stats" :key="item.label">
                 <div class="flex-1 text-center">
                     <div class="flex items-baseline justify-center gap-1">
-                        <span class="text-4xl font-bold text-gray-800 stat-number">{{ item.value }}</span>
-                        <span class="text-2xl font-bold text-indigo-500">{{ item.suffix }}</span>
+                        <span class="text-2xl md:text-4xl font-bold text-gray-800 stat-number">{{ item.value }}</span>
+                        <span class="text-lg md:text-2xl font-bold text-indigo-500">{{ item.suffix }}</span>
                     </div>
-                    <div class="text-gray-500 mt-2">{{ item.label }}</div>
+                    <div class="text-gray-500 mt-2 text-sm">{{ item.label }}</div>
                 </div>
-                <div v-if="index < stats.length - 1" class="w-px h-16 bg-gray-200" />
+                <div v-if="index < stats.length - 1" class="hidden md:block w-px h-16 bg-gray-200" />
             </template>
         </div>
         <div class="relative text-center py-8 mb-6">
@@ -53,7 +51,7 @@
                 </div>
             </div>
         </div>
-        <div class="grid cards-container grid-cols-3 gap-6" style="perspective: 1000px">
+        <div class="grid cards-container grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" style="perspective: 1000px">
             <div v-for="(item, index) in abouts" :key="item.title"
                 class="about-card group relative overflow-hidden rounded-[24px] p-8 cursor-pointer transition-all duration-500 hover:-translate-y-2 bg-white border border-gray-200 hover:border-indigo-300 hover:shadow-xl hover:shadow-indigo-500/10"
                 :style="{ animationDelay: `${index * 100}ms` }">
@@ -84,7 +82,10 @@ import Hologram from './components/Hologram.vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { onMounted, reactive } from 'vue'
+import { useRouter } from 'vue-router'
 import { useLogin } from '@/hooks/useLogin'
+
+const router = useRouter()
 const { login } = useLogin()
 gsap.registerPlugin(ScrollTrigger)
 const stats = reactive([
@@ -193,10 +194,13 @@ const initProject = () => {
     })
 }
 
-const showLogin = () => {
-    login().then(() => {
-        console.log('登录成功之后跳转页面')
-    })
+const showLogin = async () => {
+    try {
+        await login()
+        router.push('/courses/index')
+    } catch {
+        // 未登录，已弹出登录框
+    }
 }
 onMounted(() => {
     initProject()
