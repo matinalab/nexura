@@ -123,7 +123,6 @@ const onConfirm = async () => {
     const res = await createPay(body);
     if (res.code === 200) {
         if (res.data.free) {
-            ElMessage.success({ message: '购买成功', duration: 10000 });
             close();
             return;
         }

@@ -58,7 +58,7 @@ const data = [
         description: '四级核心词汇与考点搭配，适合在校生系统备考。',
         teacher: '云姐',
         url: '',
-        price: 8,
+        price: 0,
     },
     {
         name: '考研单词',
@@ -66,7 +66,7 @@ const data = [
         description: '考研英语一/二通用词汇，结合真题与长难句场景记忆。',
         teacher: '远方',
         url: '',
-        price: 9.99,
+        price: 0,
     }
 ]
 const main = async () => {
