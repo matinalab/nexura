@@ -122,6 +122,11 @@ const onConfirm = async () => {
     }
     const res = await createPay(body);
     if (res.code === 200) {
+        if (res.data.free) {
+            ElMessage.success({ message: '购买成功', duration: 10000 });
+            close();
+            return;
+        }
         isPay.value = true; //设置支付中
         window.open(res.data.payUrl, '_blank'); //打开支付页面
         timeExpire.value = res.data.timeExpire; //设置倒计时

@@ -21,8 +21,9 @@ export class PayService {
     const prifix = 'XM';//订单前缀
     return `${prifix}-${nanoid.nanoid(12)}`;
   }
+
   async create(createPayDto: CreatePayDto, user: TokenPayload) {
-    //购买过课程不能重复购买
+    // 购买过课程不能重复购买
     const courseRecord = await this.prismaService.courseRecord.findFirst({
       where: {
         userId: user.userId,
@@ -32,37 +33,75 @@ export class PayService {
     if (courseRecord) {
       return this.responseService.error(null, '您已经购买过该课程',);
     }
+
+    // 从数据库取价格，忽略前端传来的 total_amount 防止篡改
+    const course = await this.prismaService.course.findUnique({
+      where: { id: createPayDto.courseId },
+    });
+    if (!course) {
+      return this.responseService.error(null, '课程不存在');
+    }
+    const amount = Number(course.price);
+
+    // 0 元课程直接免费领取，跳过支付宝
+    if (amount === 0) {
+      await this.prismaService.$transaction(async (tx) => {
+        const outTradeNo = this.createTradeNo();
+        const paymentRecord = await tx.paymentRecord.create({
+          data: {
+            userId: user.userId,
+            outTradeNo: outTradeNo,
+            amount: 0,
+            subject: createPayDto.subject,
+            body: createPayDto.body,
+            tradeStatus: TradeStatus.TRADE_SUCCESS,
+            sendPayTime: new Date(),
+          },
+        });
+        await tx.courseRecord.create({
+          data: {
+            userId: user.userId,
+            courseId: createPayDto.courseId,
+            isPurchased: true,
+            paymentRecordId: paymentRecord.id,
+          },
+        });
+        this.socketGateway.emitPaymentSuccess(user.userId);
+      });
+      return this.responseService.success({ free: true });
+    }
+
     const result = await this.prismaService.$transaction(async (tx) => {
-      //1. 创建订单表 但是状态是未支付
+      // 1. 创建订单表，状态为未支付
       const outTradeNo = this.createTradeNo();
       await tx.paymentRecord.create({
         data: {
-          userId: user.userId, //用户id
-          outTradeNo: outTradeNo, //订单编号
-          amount: createPayDto.total_amount, //支付金额
-          subject: createPayDto.subject, //支付主题
-          body: createPayDto.body, //支付内容
+          userId: user.userId,
+          outTradeNo: outTradeNo, // 订单编号
+          amount: amount, // 数据库中的真实价格
+          subject: createPayDto.subject, // 支付主题
+          body: createPayDto.body, // 支付内容
         }
       })
-      //2.支付宝SDK发起支付生成url
-      const dateTime = dayjs().add(1, 'minute') //当前的时间增加了一分钟 为了测试我弄的快一点
+      // 2. 支付宝 SDK 发起支付生成 url
+      const dateTime = dayjs().add(1, 'minute')
       const payUrl = this.sharedPayService.getAlipaySdk().pageExecute("alipay.trade.page.pay", 'GET', {
         bizContent: {
-          out_trade_no: outTradeNo, //订单编号
-          total_amount: createPayDto.total_amount, //支付金额
-          subject: createPayDto.subject, //支付主题
+          out_trade_no: outTradeNo,
+          total_amount: amount.toFixed(2), // 数据库中的真实价格
+          subject: createPayDto.subject,
           body: JSON.stringify({
-            courseId: createPayDto.courseId, //课程id
-            userId: user.userId, //用户id
-          }), //支付内容
-          product_code: 'FAST_INSTANT_TRADE_PAY', //产品编码
+            courseId: createPayDto.courseId, // 课程id
+            userId: user.userId,
+          }),
+          product_code: 'FAST_INSTANT_TRADE_PAY', // 产品编码
           time_expire: dateTime.format('YYYY-MM-DD HH:mm:ss'),
         },
         notify_url: `${this.configService.get<string>('ALIPAY_NOTIFY_URL')!}/api/v1/pay/notify`,
       })
       return {
-        payUrl, //返回支付宝的支付链接
-        timeExpire: dateTime.toDate().getTime() //迎合Elementplus组件要求是时间戳
+        payUrl, // 返回支付宝的支付链接
+        timeExpire: dateTime.toDate().getTime()
       }
     })
     console.log('result', result);
@@ -71,10 +110,10 @@ export class PayService {
 
   async notify(req: Request) {
     await this.prismaService.$transaction(async (tx) => {
-      //1.更新支付库 支付时间 + 支付宝交易号 + 支付状态
+      // 1. 更新支付记录
       const paymentRecord = await tx.paymentRecord.update({
         where: {
-          outTradeNo: req.body.out_trade_no, //拿到了订单编号
+          outTradeNo: req.body.out_trade_no, // 拿到订单编号
         },
         data: {
           tradeNo: req.body.trade_no, //拿到了支付宝交易号
@@ -82,7 +121,7 @@ export class PayService {
           sendPayTime: dayjs(req.body.gmt_payment).toDate(), //拿到了支付时间
         },
       })
-      //2.创建我的课程
+      // 2. 创建我的课程
       const body = JSON.parse(req.body.body) as { courseId: string, userId: string };
       await tx.courseRecord.create({
         data: {

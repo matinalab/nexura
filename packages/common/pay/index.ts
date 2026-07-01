@@ -8,4 +8,5 @@ export interface CreatePayDto {
 export interface ResultPay {
     payUrl: string; //支付URL
     timeExpire: number; //过期时间
+    free?: boolean; //是否免费直接领取
 }
