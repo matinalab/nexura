@@ -1,69 +1,114 @@
 <template>
-   <canvas ref="hologramRef"></canvas>
+    <canvas
+        ref="hologramRef"
+        class="block h-[250px] w-[500px] transition-opacity duration-300"
+        :class="isReady ? 'opacity-100 visible' : 'opacity-0 invisible'"
+    />
 </template>
-
 
 <script setup lang="ts">
 import * as THREE from 'three'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js' //gltf模型加载器
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js' //轨道控制器
-//轨道控制器 模型他可以被退拽 缩放 旋转
-import { useTemplateRef,onMounted } from 'vue'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
+
 const hologramRef = useTemplateRef<HTMLCanvasElement>('hologramRef')
-const initThree = () => {
-    
-    //创建场景 -> 网格(几何 + 材质) + 相机 + 渲染器 + 灯光(可选的)
-    //创建场景 -> 模型obj gltf ... + 相机 + 渲染器 + 灯光(可选的)
-    const scene = new THREE.Scene()
-    //动画混合器
-    let mixer: THREE.AnimationMixer | null = null
-    const clock = new THREE.Timer() //创建时钟
-    //创建相机
-    const camera = new THREE.PerspectiveCamera(75, 500 / 250, 0.1, 1000)
-    camera.position.set(0, 0, 10)
-    const loader = new GLTFLoader() //创建模型加载器
- 
-    loader.load('/models/hologram/scene.gltf', (gltf) => {
-        scene.add(gltf.scene) //添加模型到场景
-        gltf.scene.scale.set(4, 4, 4) //缩放模型
-        if(gltf.animations && gltf.animations.length > 0) {
-            mixer = new THREE.AnimationMixer(gltf.scene)
-            gltf.animations.forEach((clip) => {
-                const action = mixer!.clipAction(clip)
-                action.play()
-            })
-        }
+const isReady = ref(false)
+let animationFrameId = 0
+let renderer: THREE.WebGLRenderer | null = null
+let controls: OrbitControls | null = null
+let currentScene: THREE.Scene | null = null
+let disposed = false
+
+const disposeMaterial = (material: THREE.Material | THREE.Material[]) => {
+    const materials = Array.isArray(material) ? material : [material]
+    materials.forEach(item => item.dispose())
+}
+
+const disposeScene = (scene: THREE.Object3D) => {
+    scene.traverse(object => {
+        if (!(object instanceof THREE.Mesh)) return
+        object.geometry.dispose()
+        disposeMaterial(object.material)
     })
-    //环境光
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1)
-    scene.add(ambientLight)
-    //平行光
+}
+
+const initThree = () => {
+    const canvas = hologramRef.value
+    if (!canvas) return
+
+    const scene = new THREE.Scene()
+    currentScene = scene
+    const clock = new THREE.Timer()
+    let mixer: THREE.AnimationMixer | null = null
+
+    const camera = new THREE.PerspectiveCamera(75, 2, 0.1, 1000)
+    camera.position.set(0, 0, 10)
+
+    renderer = new THREE.WebGLRenderer({
+        canvas,
+        antialias: true,
+        alpha: true,
+        precision: 'highp',
+        powerPreference: 'high-performance',
+        premultipliedAlpha: false,
+    })
+    renderer.setSize(500, 250)
+    renderer.setClearColor(0x000000, 0)
+
+    controls = new OrbitControls(camera, renderer.domElement)
+    scene.add(new THREE.AmbientLight(0xffffff, 1))
+
     const directionalLight = new THREE.DirectionalLight(0xffffff, 2)
     directionalLight.position.set(5, 10, 7.5)
     scene.add(directionalLight)
-    //创建渲染器
-    const renderer = new THREE.WebGLRenderer({
-        canvas: hologramRef.value!,
-        antialias: true, //抗锯齿
-        alpha: true, //透明背景
-        precision: 'highp', //高精度
-        powerPreference: 'high-performance', //高性能
-    })
-    renderer.setSize(500, 250) //设置渲染器大小
-    const controls = new OrbitControls(camera, renderer.domElement) //创建轨道控制器
-    const animate = () => {
-        requestAnimationFrame(animate)
-        const delta = clock.getDelta() //1 - 2
-        if(mixer) {
-            mixer.update(delta) //更新动画混合器
-        }
-        scene.rotation.y += 0.002 //旋转场景
-        controls.update() //更新轨道控制器
-        renderer.render(scene, camera)
+
+    const render = () => {
+        mixer?.update(clock.getDelta())
+        scene.rotation.y += 0.002
+        controls?.update()
+        renderer?.render(scene, camera)
     }
-    animate()
+
+    new GLTFLoader().load('/models/hologram/scene.gltf', (gltf) => {
+        if (disposed) {
+            disposeScene(gltf.scene)
+            return
+        }
+
+        scene.add(gltf.scene)
+        gltf.scene.scale.set(4, 4, 4)
+
+        if (gltf.animations.length) {
+            mixer = new THREE.AnimationMixer(gltf.scene)
+            gltf.animations.forEach(clip => mixer?.clipAction(clip).play())
+        }
+
+        render()
+        requestAnimationFrame(() => {
+            if (!disposed) {
+                isReady.value = true
+                animate()
+            }
+        })
+    })
+
+    const animate = () => {
+        animationFrameId = requestAnimationFrame(animate)
+        render()
+    }
 }
-onMounted(()=>{
-    initThree()
+
+onMounted(initThree)
+
+onBeforeUnmount(() => {
+    cancelAnimationFrame(animationFrameId)
+    disposed = true
+    controls?.dispose()
+    if (currentScene) disposeScene(currentScene)
+    renderer?.dispose()
+    renderer = null
+    controls = null
+    currentScene = null
 })
 </script>
