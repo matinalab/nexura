@@ -9,9 +9,9 @@ export const useUserStore = defineStore('user', () => {
     user.value = params 
   }
   //导出accessToken
-  const getAccessToken = computed(() => user.value?.token.accessToken)
+  const getAccessToken = computed(() => user.value?.token?.accessToken)
   //导出refreshToken
-  const getRefreshToken = computed(() => user.value?.token.refreshToken)
+  const getRefreshToken = computed(() => user.value?.token?.refreshToken)
   //更新token
   const updateToken = (newToken: Token) => {
     user.value!.token = newToken
